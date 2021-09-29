@@ -1,4 +1,5 @@
 from turtle import Turtle
+import time
 MOVE_DISTANCE = 20
 UP = 90
 DOWN = 270
@@ -50,16 +51,25 @@ class Snake:
         if self.head.heading() != LEFT:
             self.head.setheading(RIGHT)
 
-    def detect_collision(self):
+    def detect_collision(self, screen):
         if self.head.xcor() > 280 or self.head.xcor() < -280 or self.head.ycor() > 280 or self.head.ycor() < -280:
             self.change_snake_colour_to_red()
+            screen.update()
             return False
         for segment in self.segments[1:]:
             if self.head.distance(segment) < 10:
                 self.change_snake_colour_to_red()
+                screen.update()
                 return False
         return True
 
     def change_snake_colour_to_red(self):
         for segment in self.segments:
             segment.color("red")
+
+    def reset(self):
+        for seg in self.segments:
+            seg.goto(1000, 1000)
+        self.segments.clear()
+        self.create_snake()
+        self.head = self.segments[0]

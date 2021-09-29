@@ -4,6 +4,9 @@ from food import Food
 from scoreboard import Scoreboard
 import time
 
+
+LIVES = 3
+
 screen = Screen()
 screen.setup(width=600, height=600)
 screen.bgcolor("black")
@@ -21,15 +24,23 @@ screen.onkey(snake.left, "Left")
 screen.onkey(snake.right, "Right")
 
 game_is_on = True
-while game_is_on:
+while LIVES >= 0:
+    snake_alive = True
+    LIVES -= 1
+    score.snake_dead(LIVES)
+    while snake_alive:
+        screen.update()
+        time.sleep(0.1)
+        snake.move()
+        snake_alive = snake.detect_collision(screen)
+        if snake.head.distance(food) < 15:
+            food.refresh()
+            snake.extend()
+            score.increase_score()
     screen.update()
-    time.sleep(0.1)
-    snake.move()
-    game_is_on = snake.detect_collision()
-    if snake.head.distance(food) < 15:
-        food.refresh()
-        snake.extend()
-        score.increase_score()
+    if LIVES > 0:
+        snake.reset()
+
 screen.update()
-score.game_over()
+#score.game_over()
 screen.exitonclick()
